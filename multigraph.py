@@ -1,0 +1,152 @@
+import dash
+import dash_html_components as html
+import os
+import flask
+import mydash as md
+import sqlcon
+import dash_table
+import dash_core_components as dcc
+from dash.dependencies import Output, Input
+
+leitor = sqlcon.LeitorCaminhoes(False)
+
+
+app = dash.Dash()
+
+def tabelaEntregas(codTransp, id=''):
+    df = leitor.getDadosEntregas(codTransp)
+
+    df.head(5)
+    print('teste')
+    print(df)
+    return html.Div([
+        html.Div([
+            dash_table.DataTable(
+                id=id,
+                columns=[{"name": i, "id": i} for i in df.columns],
+                data=df.to_dict('records'),
+                style_cell={
+                    'whiteSpace': 'normal',
+                    'textOverflow': 'ellipsis',
+                    'minWidth': '10px',
+                    'maxHeight': '30px',
+                    'fontWeight': 'bold',
+                },
+                style_data_conditional=[
+                    {
+                        'if': {'row_index': 'odd'},
+                        'backgroundColor': '#93cacc'
+                    },
+                    {
+                        'if': {'row_index': 'even'},
+                        'backgroundColor': '#ddeeef'
+                    }
+                ],
+                style_header={
+                    'fontWeight': '900',
+                    'color': 'white',
+                    'backgroundColor': '#008489',
+                    'borderColor': '#014b4e',
+                },
+                style_table={
+                    'width': '100%',
+                    'minHeight': '100px',
+                    'border': 'thin lightgrey solid',
+                    'backgroundColor': 'inherited'
+                }
+            )],
+            style={'width': '100%'}
+        )],
+        className='tableContainer flexBox')
+
+def DivCaminhao(Descricao, codTransp):
+    leitor.open()
+    caminhao = leitor.getDadosCaminhao(codTransp)
+
+    retorno = html.Div([
+            html.H2(Descricao),
+            md.retoraBarraEntregas(caminhao.NroEntregas, app, 'barra'+codTransp),
+            html.H3('%.0f de %.0f KG' % (caminhao.PesoBruto, caminhao.PesoMax)),
+            md.retornaMedidor(float(caminhao.PesoBruto*100/caminhao.PesoMax), 'medidor'+codTransp),
+            tabelaEntregas(codTransp, 'table'+codTransp)
+            #html.H3('Valor dos pedidos: R$ 37500,00')
+        ], className="grafico flexContainer")
+
+    leitor.close()
+
+    return retorno
+
+#app.css.config.serve_locally = True
+
+layout = {
+    'margin': {
+        'l': 5,
+        'r': 5,
+        'b': 20,
+        't': 20,
+        'pad': 5
+    },
+}
+
+
+def retornaDivDados():
+    return html.Div([
+        DivCaminhao('Sérgio', '001612'),
+        DivCaminhao('Paulo', '001650'),
+        DivCaminhao('Alex', '001640'),
+    ], className="mainContainer flexBox")
+
+
+app.layout = \
+    html.Div([
+        dcc.Interval(
+            id='interval',
+            interval=60 * 1000,  # in milliseconds
+            n_intervals=0
+        ),
+        html.H1('Controle de Entregas', id='Titulo'),
+        html.Div([
+            retornaDivDados()
+            ], id='containerDados', className='flexContainer flexBox'
+        )], className='main2 flexContainer')
+
+
+@app.callback([Output('containerDados', 'children')],
+              [Input('interval', 'n_intervals')])
+def update_graph(n):
+    return [retornaDivDados()]
+
+
+
+# Add a static image route that serves images from desktop
+# Be *very* careful here - you don't want to serve arbitrary files
+# from your computer or server
+
+# css_directory = os.getcwd()
+# print(css_directory)
+# stylesheets = ['styleGrid.css']
+# static_css_route = '/static/'
+#
+#
+# @app.server.route('{}<stylesheet>'.format(static_css_route))
+# def serve_stylesheet(stylesheet):
+#     if stylesheet not in stylesheets:
+#         raise Exception(
+#             '"{}" is excluded from the allowed static files'.format(
+#                 stylesheet
+#             )
+#         )
+#     return flask.send_from_directory(css_directory, stylesheet)
+#
+#
+# for stylesheet in stylesheets:
+#     app.css.append_css({"external_url": "/static/{}".format(stylesheet)})
+
+#app.css.append_css({
+#    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
+#})
+
+#app.scripts.append_script({"external_url": 'https://code.jquery.com/jquery-3.2.1.min.js'})
+
+if __name__ == '__main__':
+    app.run_server(debug=True)

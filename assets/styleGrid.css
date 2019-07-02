@@ -1,0 +1,96 @@
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    background: transparent;
+}
+
+.main2 {
+    background-color: azure;
+    height: 97vh;
+}
+
+/*#id001650, #id001612, #id001640 {
+    height: 100%;
+}*/
+
+.barWrapper div {
+    height: 100%;
+}
+
+.truckIcon {
+    height: 40px;
+    width: 40px;
+    margin-top: 8px;
+    margin-left: 2px;
+    margin-right: 2px;
+    display: inline;
+}
+
+.tableContainer {
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+
+.flexContainer {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+.flexBox {
+    height: 100px;
+    flex-basis: 100px;
+    flex: 1;
+}
+
+.mainContainer {
+    min-height: 100px;
+}
+
+medidorWrapper2 {
+    text-align: center;
+}
+
+.medidorWrapper {
+    text-align: center;
+    width: 100%;
+    max-width: 350px;
+    display: inline-block;
+}
+
+.medidorContainer {
+    margin-bottom: 10px;
+}
+
+.grafico {
+    width: 32%;
+    height: 99%;
+    float: left;
+    box-sizing: border-box;
+    text-align: center;
+    border:1px dashed #313231;
+    padding-right: 3px;
+    margin: 2px;
+    overflow: hidden;
+}
+
+h1 {
+    color: #333;
+    clear: both;
+    font-family: Roboto;
+    font-weight: 400;
+    text-align: center;
+    flex-grow: 0;
+    margin: 2px;
+}
+
+h3 {
+    text-align: center;
+    margin: 2px;
+}
+
+h2 {
+    text-align: center;
+    margin: 2px;
+    margin-bottom: 5px;
+}
