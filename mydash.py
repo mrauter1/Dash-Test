@@ -24,9 +24,6 @@ def retornaMedidor(porcentagem, id=''):
 def retoraBarraEntregas(entregasAtual, app, id=''):
     entregasMax=15
 
-    image_filename = 'F:\Sistemas.new\Dash-Test\\truck-icon.png'
-    encoded_image = base64.b64encode(open(image_filename, 'rb').read())
-
     if entregasAtual > entregasMax:
         entregasMax = entregasAtual
 
