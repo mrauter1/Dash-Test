@@ -10,8 +10,6 @@ import sys
 import traceback
 from dash.dependencies import Output, Input
 
-leitor = sqlcon.LeitorCaminhoes(False)
-
 def log(texto):
     path = os.path.dirname(os.path.abspath(__file__))+"\\PainelLog.txt"
     if os.path.exists(path):
@@ -25,7 +23,7 @@ def log(texto):
 
 app = dash.Dash()
 
-def tabelaEntregas(codTransp, id=''):
+def tabelaEntregas(leitor, codTransp, id=''):
     df = leitor.getDadosEntregas(codTransp)
 
     df.head(5)
@@ -74,7 +72,7 @@ def tabelaEntregas(codTransp, id=''):
 def DivCaminhao(Descricao, codTransp):
     retorno = ''
 
-    leitor.open()
+    leitor = sqlcon.LeitorCaminhoes(True)
     try:
         caminhao = leitor.getDadosCaminhao(codTransp)
 
@@ -83,7 +81,7 @@ def DivCaminhao(Descricao, codTransp):
                 md.retoraBarraEntregas(caminhao.NroEntregas, app, 'barra'+codTransp),
                 html.H3('%.0f de %.0f KG' % (caminhao.PesoBruto, caminhao.PesoMax)),
                 md.retornaMedidor(float(caminhao.PesoBruto*100/caminhao.PesoMax), 'medidor'+codTransp),
-                tabelaEntregas(codTransp, 'table'+codTransp)
+                tabelaEntregas(leitor, codTransp, 'table'+codTransp)
                 #html.H3('Valor dos pedidos: R$ 37500,00')
             ], className="grafico flexContainer")
     finally:

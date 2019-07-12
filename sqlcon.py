@@ -46,7 +46,8 @@ class LeitorCaminhoes:
 
         cursor.execute('select * from vwCaminhoes where codtransportadora = %s', codTransp.zfill(6))
 
-        caminhao = None
+        caminhao = Caminhao()
+        caminhao.codTransportadora = codTransp.zfill(6)
 
         for row in cursor:
             caminhao = Caminhao()
@@ -56,7 +57,8 @@ class LeitorCaminhoes:
             caminhao.Litros = getValueByName(row, 'litros')
             caminhao.PesoMax = getValueByName(row, 'PesoMax')
             #caminhoes.append(caminhao)
-            return caminhao
+
+        return caminhao
 
 
 
