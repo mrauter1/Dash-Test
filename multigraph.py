@@ -75,12 +75,17 @@ def DivCaminhao(Descricao, codTransp):
     leitor = sqlcon.LeitorCaminhoes(True)
     try:
         caminhao = leitor.getDadosCaminhao(codTransp)
+		
+        if caminhao.PesoMax > 0:
+            perc = float(caminhao.PesoBruto*100/caminhao.PesoMax)
+        else:
+            perc = float(0)
 
         retorno = html.Div([
                 html.H2(codTransp+'-'+Descricao),
                 md.retoraBarraEntregas(caminhao.NroEntregas, app, 'barra'+codTransp),
                 html.H3('%.0f de %.0f KG' % (caminhao.PesoBruto, caminhao.PesoMax)),
-                md.retornaMedidor(float(caminhao.PesoBruto*100/caminhao.PesoMax), 'medidor'+codTransp),
+                md.retornaMedidor(perc, 'medidor'+codTransp),
                 tabelaEntregas(leitor, codTransp, 'table'+codTransp)
                 #html.H3('Valor dos pedidos: R$ 37500,00')
             ], className="grafico flexContainer")
