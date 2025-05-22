@@ -6,14 +6,24 @@ import mydash as md
 import sqlcon
 import dash_table
 import dash_core_components as dcc
+import sys
+import traceback
 from dash.dependencies import Output, Input
 
-leitor = sqlcon.LeitorCaminhoes(False)
+def log(texto):
+    path = os.path.dirname(os.path.abspath(__file__))+"\\PainelLog.txt"
+    if os.path.exists(path):
+        open_command = 'a'
+    else:
+        open_command = 'w'
 
+    f = open(path, open_command)
+    f.write(texto)
+    f.close()
 
 app = dash.Dash()
 
-def tabelaEntregas(codTransp, id=''):
+def tabelaEntregas(leitor, codTransp, id=''):
     df = leitor.getDadosEntregas(codTransp)
 
     df.head(5)
@@ -60,19 +70,27 @@ def tabelaEntregas(codTransp, id=''):
         className='tableContainer flexBox')
 
 def DivCaminhao(Descricao, codTransp):
-    leitor.open()
-    caminhao = leitor.getDadosCaminhao(codTransp)
+    retorno = ''
 
-    retorno = html.Div([
-            html.H2(Descricao),
-            md.retoraBarraEntregas(caminhao.NroEntregas, app, 'barra'+codTransp),
-            html.H3('%.0f de %.0f KG' % (caminhao.PesoBruto, caminhao.PesoMax)),
-            md.retornaMedidor(float(caminhao.PesoBruto*100/caminhao.PesoMax), 'medidor'+codTransp),
-            tabelaEntregas(codTransp, 'table'+codTransp)
-            #html.H3('Valor dos pedidos: R$ 37500,00')
-        ], className="grafico flexContainer")
+    leitor = sqlcon.LeitorCaminhoes(True)
+    try:
+        caminhao = leitor.getDadosCaminhao(codTransp)
+		
+        if caminhao.PesoMax > 0:
+            perc = float(caminhao.PesoBruto*100/caminhao.PesoMax)
+        else:
+            perc = float(0)
 
-    leitor.close()
+        retorno = html.Div([
+                html.H2(codTransp+'-'+Descricao),
+                md.retoraBarraEntregas(caminhao.NroEntregas, app, 'barra'+codTransp),
+                html.H3('%.0f de %.0f KG' % (caminhao.PesoBruto, caminhao.PesoMax)),
+                md.retornaMedidor(perc, 'medidor'+codTransp),
+                tabelaEntregas(leitor, codTransp, 'table'+codTransp)
+                #html.H3('Valor dos pedidos: R$ 37500,00')
+            ], className="grafico flexContainer")
+    finally:
+        leitor.close()
 
     return retorno
 
@@ -90,11 +108,18 @@ layout = {
 
 
 def retornaDivDados():
-    return html.Div([
-        DivCaminhao('Sérgio', '001612'),
-        DivCaminhao('Paulo', '001650'),
-        DivCaminhao('Alex', '001640'),
-    ], className="mainContainer flexBox")
+    try:
+        return html.Div([
+            DivCaminhao('Sérgio', '001612'),
+            DivCaminhao('Paulo', '001650'),
+            DivCaminhao('Alex', '001640'),
+        ], className="mainContainer flexBox")
+    except:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+        lines = '-'.join(lines)
+        print(lines)
+        log(lines)
 
 
 app.layout = \
@@ -106,7 +131,7 @@ app.layout = \
         ),
         html.H1('Controle de Entregas', id='Titulo'),
         html.Div([
-            retornaDivDados()
+            #retornaDivDados() Vai ser atualizado no callback
             ], id='containerDados', className='flexContainer flexBox'
         )], className='main2 flexContainer')
 
@@ -148,5 +173,6 @@ def update_graph(n):
 
 #app.scripts.append_script({"external_url": 'https://code.jquery.com/jquery-3.2.1.min.js'})
 
+log('Iniciando servidor...')
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, host='0.0.0.0')

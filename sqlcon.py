@@ -9,6 +9,14 @@ class Caminhao:
     PesoMax=0.0
 
 
+def getValueByName(row, name):
+    for key in row:
+        if key.strip().upper() == name.strip().upper():
+            return row[key]
+
+    return None
+
+
 class LeitorCaminhoes:
     conn = None
 
@@ -38,17 +46,19 @@ class LeitorCaminhoes:
 
         cursor.execute('select * from vwCaminhoes where codtransportadora = %s', codTransp.zfill(6))
 
-        caminhao = None
+        caminhao = Caminhao()
+        caminhao.codTransportadora = codTransp.zfill(6)
 
         for row in cursor:
             caminhao = Caminhao()
-            caminhao.codTransportadora = row['CODTRANSPORTADORA']
-            caminhao.NroEntregas = row['NroEntregas']
-            caminhao.PesoBruto = row['PesoBruto']
-            caminhao.Litros = row['litros']
-            caminhao.PesoMax = row['PesoMax']
+            caminhao.codTransportadora = getValueByName(row, 'CODTRANSPORTADORA')
+            caminhao.NroEntregas = getValueByName(row, 'NroEntregas')
+            caminhao.PesoBruto = getValueByName(row, 'PesoBruto')
+            caminhao.Litros = getValueByName(row, 'litros')
+            caminhao.PesoMax = getValueByName(row, 'PesoMax')
             #caminhoes.append(caminhao)
-            return caminhao
+
+        return caminhao
 
 
 
