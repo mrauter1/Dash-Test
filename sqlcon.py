@@ -25,7 +25,7 @@ class LeitorCaminhoes:
             self.open()
 
     def open(self):
-        self.conn = pymssql.connect(host=r'10.0.0.201', port=1433, user=r'user', password=r'28021990',
+        self.conn = pymssql.connect(host=r'10.0.0.201', port=1433, user=r'Gerenciador', password=r'ProjetoGerenciador!@0',
                                     database=r'logistec')
 
     def close(self):

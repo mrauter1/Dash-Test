@@ -24,6 +24,7 @@ def log(texto):
 app = dash.Dash()
 
 def tabelaEntregas(leitor, codTransp, id=''):
+    log('tabelaEntregas')
     df = leitor.getDadosEntregas(codTransp)
 
     df.head(5)
@@ -70,6 +71,7 @@ def tabelaEntregas(leitor, codTransp, id=''):
         className='tableContainer flexBox')
 
 def DivCaminhao(Descricao, codTransp):
+    log('DivCaminhao')
     retorno = ''
 
     leitor = sqlcon.LeitorCaminhoes(True)
@@ -108,6 +110,7 @@ layout = {
 
 
 def retornaDivDados():
+    log('retornaDivDados')
     try:
         return html.Div([
             DivCaminhao('Sérgio', '001612'),
@@ -139,6 +142,7 @@ app.layout = \
 @app.callback([Output('containerDados', 'children')],
               [Input('interval', 'n_intervals')])
 def update_graph(n):
+    log('update_graph')
     return [retornaDivDados()]
 
 
@@ -173,6 +177,7 @@ def update_graph(n):
 
 #app.scripts.append_script({"external_url": 'https://code.jquery.com/jquery-3.2.1.min.js'})
 
-log('Iniciando servidor...')
 if __name__ == '__main__':
+    log('Iniciando servidor...')
+    #app.run_server(debug=True, host='127.0.0.1')
     app.run_server(debug=True, host='0.0.0.0')
