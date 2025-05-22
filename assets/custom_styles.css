@@ -1,0 +1,67 @@
+/* assets/custom_styles.css */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa; /* Light grey background for the whole page */
+    color: #212529; /* Default text color (dark grey) */
+    line-height: 1.6;
+}
+
+.main-app-container {
+    max-width: 960px;
+    margin: 0 auto; /* Center the container */
+    padding: 20px;
+}
+
+.app-title {
+    text-align: center;
+    color: #333333;
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* Slightly different font for emphasis */
+    font-size: 2.5em; /* Larger font size */
+    font-weight: 300; /* Lighter font weight for modern look */
+    margin-bottom: 40px; /* Increased margin */
+    margin-top: 20px;
+}
+
+.component-wrapper {
+    background-color: #ffffff; /* White background for components */
+    border: 1px solid #dee2e6; /* Lighter border color */
+    border-radius: 8px; /* Slightly more rounded corners */
+    padding: 25px; /* Increased padding */
+    margin-bottom: 25px; /* Increased margin */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Softer, more modern shadow */
+}
+
+/* Specific styling for rows if needed, can inherit from component-wrapper */
+.component-row {
+    /* Flex properties will remain inline in main_app.py for now, or could be moved here if generic enough */
+    /* This class will primarily be used with component-wrapper for shared styling */
+}
+
+.section-title {
+    text-align: center;
+    font-size: 1.5em;
+    color: #495057;
+    margin-bottom: 20px;
+    font-weight: 400;
+}
+
+.subsection-title {
+    text-align: center;
+    font-size: 1.2em;
+    color: #6c757d;
+    margin-bottom: 15px;
+    font-weight: 400;
+}
+
+.gauge-display-wrapper {
+    max-width: 400px;
+    margin: 0 auto; /* Center the gauge display element */
+}
+
+/* Ensure truck icon is vertically aligned if not handled by flex in its parent */
+.truckIcon {
+    vertical-align: middle;
+}
